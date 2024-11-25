@@ -1,11 +1,15 @@
 from conectar.extract_data import consult_data
 from create_chart.chart_generator import chart_generate
+from create_dash.create_pdf import create_pdf
 import pandas as pd
+import tempfile
 
-marca='SUPER'
+marca='BRINSA S.A'
 mes=[10,11]
-sede='bogota'
-chart=chart_generate(title_color="darkblue", title_size=12,brand=marca)
+sede='boyaca'
+paht="resource\img\matplob\chart_image.png"
+chart=chart_generate(title_color="darkblue", title_size=12,brand=marca,sede=sede,path=paht)
+dash=create_pdf(marca=marca,mes=mes,sede=sede,ruta= 'resource\pdfs\pdf_final.pdf')
 
 
 def dataframe_exractor(marca,mes,sede):
@@ -24,11 +28,42 @@ def dataframe_exractor(marca,mes,sede):
 # clud charts 
 month,weekly,group,fuente,product,category=dataframe_exractor(marca,mes,sede)
 
+cover='resource\img\Local\portada.png'
+dash.add_diapositiva(cover)
 
 # Graficas
-apiladas=chart.create_categoria(category)
-semana=chart.create_week_sales(weekly)
-impavsfac=chart.create_vs_imp_facturas(weekly)
+semana = chart.create_week_sales(weekly)
+with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+    f.write(semana.getvalue())  
+    semana_path = f.name  
+dash.add_diapositiva(semana_path)
+
+impavsfac = chart.create_vs_imp_facturas(weekly)
+with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+    f.write(impavsfac.getvalue())  
+    impavsfac_path = f.name  
+dash.add_diapositiva(impavsfac_path)
+
+chart_fuente = chart.create_chartpie(fuente)
+with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+    f.write(chart_fuente.getvalue())  
+    chart_fuente_path = f.name  
+dash.add_diapositiva(chart_fuente_path)
+
+# cloudcode = chart.create_cloud(product)
+# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+#     f.write(cloudcode.getvalue())
+#     cloudcode_path = f.name
+# dash.add_diapositiva(cloudcode_path)
+
+apiladas = chart.create_categoria(category)
+with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+    f.write(apiladas.getvalue())  
+    apiladas_path = f.name  
+dash.add_diapositiva(apiladas_path)
+
+dash.save_pdf()
+
 
 
 # mes=create_week(month,marca)
