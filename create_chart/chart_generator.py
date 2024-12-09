@@ -30,12 +30,6 @@ class chart_generate:
     
         ax.bar(semanas, ventas, color='skyblue', alpha=0.7, label="Ventas", width=0.6)
         ax.set_ylim(bottom=min_venta * 0.9)
-        # for i, venta in enumerate(ventas):
-        # # Coloca el texto fuera de la barra, por la parte de afuera, en el costado derecho de la barra
-        #     ax.text(semanas.iloc[i], venta, f"{venta:,.0f}", ha='center', va='center', 
-        #         fontsize=8, rotation=90, color='black', position=(semanas.iloc[i] + 0.3, venta))
-
-        
         ax2 = ax.twinx()
         line, = ax2.plot(semanas, [ventas.iloc[i] for i in range(len(ventas))], 
                          color='orange', marker='o', linestyle='-', label="Crecimiento (%)")
@@ -81,6 +75,7 @@ class chart_generate:
 
         plt.legend(["Impactos", "Facturas"])
         plt.title("Ventas vs impactos")
+        ax.set_xlabel("Semana")
         plt.grid(True)
         # plt.show()
         buf = io.BytesIO()
@@ -177,34 +172,48 @@ class chart_generate:
      
         #TORTA DE FUENTE
     def create_chartpie(self, fuente):
+    # Definir categorías según la sede
         if self.sede == "boyaca":
             categorias = [
                 "SERVIMAX ASESORES",
-                "SERVIMAX TENDEROS FRECUENCIA NORMAL",
-                "MANUAL",
+                "TENDEROS", 
+                "WHATSAPP",
                 "otros"
+            ]
+            tenderos_categorias = [
+                "SERVIMAX TENDEROS FRECUENCIA NORMAL",
             ]
         else:  # Bogotá
             categorias = [
                 "SERVIMAX ASESORES",
-                "SERVIMAX TENDEROS FRECUENCIA NORMAL",
-                "SERVIMAX TENDEROS EXPRESS",
+                "TENDEROS",  
+                "WHATSAPP",
                 "otros"
             ]
-
+            tenderos_categorias = [
+                "SERVIMAX TENDEROS FRECUENCIA NORMAL",
+                "SERVIMAX TENDEROS EXPRESS"
+            ]
         colores = {
             "SERVIMAX ASESORES": "#df0d13",  
-            "SERVIMAX TENDEROS FRECUENCIA NORMAL": "#9dd33e",  
-            "SERVIMAX TENDEROS EXPRESS": "#16c263", 
-            "MANUAL": "#ff7f50",  
+            "TENDEROS": "#16c263",
+            "WHATSAPP": "#1e90ff", 
             "otros": "#ffd700",  
         }
 
+        def categorizar(dato):
+            if dato in tenderos_categorias:
+                return "TENDEROS"
+            elif dato == "WHATSAPP":
+                return "WHATSAPP"
+            elif dato in categorias:
+                return dato
+            else:
+                return "otros"
 
-        fuente["categoria"] = fuente["dato"].apply(
-            lambda x: x if x in categorias else "otros"
-        )
+        fuente["categoria"] = fuente["dato"].apply(categorizar)
 
+        # Calcular totales por categoría
         totales_por_categoria = fuente.groupby("categoria")[["venta", "impactos", "facturas"]].sum()
 
         for categoria in categorias:
@@ -258,6 +267,7 @@ class chart_generate:
         buf.seek(0) 
         plt.close(fig)
         return buf
+
 
        
             
