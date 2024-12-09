@@ -4,12 +4,12 @@ from create_dash.create_pdf import create_pdf
 import pandas as pd
 import tempfile
 
-marca='BRINSA S.A'
-mes=[10,11]
-sede='boyaca'
-paht="resource\img\matplob\chart_image.png"
+marca='SUPER'
+mes=[11,12]
+sede='bogota'
+paht="resource/img/matplob/chart_image.png"
 chart=chart_generate(title_color="darkblue", title_size=12,brand=marca,sede=sede,path=paht)
-dash=create_pdf(marca=marca,mes=mes,sede=sede,ruta= 'resource\pdfs\pdf_final.pdf')
+dash=create_pdf(marca=marca,mes=mes,sede=sede,ruta= 'resource/pdfs/pdf_final.pdf')
 
 
 def dataframe_exractor(marca,mes,sede):
@@ -28,7 +28,7 @@ def dataframe_exractor(marca,mes,sede):
 # clud charts 
 month,weekly,group,fuente,product,category=dataframe_exractor(marca,mes,sede)
 
-cover='resource\img\Local\portada.png'
+cover='resource/img/Local/portada.png'
 dash.add_diapositiva(cover)
 
 # Graficas

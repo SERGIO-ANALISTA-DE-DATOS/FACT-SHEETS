@@ -86,7 +86,7 @@ class chart_generate:
         buf = io.BytesIO()
         plt.savefig(buf, format='png')  
         buf.seek(0) 
-        plt.close(fig)
+        
         return buf
     
     # CATEGORIAS MAS VENDIDAS
@@ -136,6 +136,7 @@ class chart_generate:
         ax.set_ylabel('Ventas Totales')
         ax.legend(title="Categorías", loc='upper left', bbox_to_anchor=(1, 1))
         plt.tight_layout()
+        # plt.show()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')  
         buf.seek(0) 
@@ -171,7 +172,7 @@ class chart_generate:
         plt.imshow(nube, interpolation='bilinear')
         plt.axis("off")
         plt.title("Nube de palabras en forma de círculo", fontsize=16)
-        plt.show()
+        # plt.show()
 
      
         #TORTA DE FUENTE
@@ -251,7 +252,7 @@ class chart_generate:
                     f'${int(valor_actual):,}' if vnt else f'{int(valor_actual)}',
                     fontsize=12, ha="center", va="center", color="black"
                 )
-
+        # plt.show()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')  
         buf.seek(0) 
