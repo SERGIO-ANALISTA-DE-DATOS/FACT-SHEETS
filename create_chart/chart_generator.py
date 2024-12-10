@@ -4,6 +4,7 @@ import matplotlib.ticker as mticker
 import pandas as pd
 import numpy as np
 from wordcloud import WordCloud
+import seaborn as sns
 import io 
 
 class chart_generate:
@@ -74,7 +75,7 @@ class chart_generate:
             ax.text(semana.iloc[i], facturas.iloc[i]+5.0, f"{facturas.iloc[i]}", ha='center', va='bottom', fontsize=7, color="blue")
 
         plt.legend(["Impactos", "Facturas"])
-        plt.title("Ventas vs impactos")
+        plt.title("Facturas vs impactos")
         ax.set_xlabel("Semana")
         plt.grid(True)
         # plt.show()
@@ -268,7 +269,36 @@ class chart_generate:
         plt.close(fig)
         return buf
 
+    def create_headmap(self,day):
+        spanglis = {
+        'Monday': 'Lunes',
+        'Tuesday': 'Martes',
+        'Wednesday': 'Miércoles',
+        'Thursday': 'Jueves',
+        'Friday': 'Viernes',
+        'Saturday': 'Sábado',
+        'Sunday': 'Domingo'
+            }
+        day['dato']=day['dato'].map(spanglis)
+        day.rename(columns={'impactos': 'semana'}, inplace=True)
+        # print(day)
+        heatmap_data = day.pivot_table(
+        index='semana',
+        columns='dato',
+        values='venta',
+        aggfunc='sum' 
+        )
+        dias_orden = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        heatmap_data = heatmap_data[dias_orden]
 
-       
+
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="YlGnBu", linewidths=.5, cbar_kws={'label': 'Ventas'})
+
+        plt.title("Venta ", fontsize=16)
+        plt.xlabel("Días de la Semana", fontsize=12)
+        plt.ylabel("Semanas", fontsize=12)
+        plt.tight_layout()
+        plt.show()
             
             

@@ -50,9 +50,18 @@ def consult_data(marca,month,sede):
         ,COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end ) as facturas
         from RESUMEN_VENTAS rv 
         where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
-        GROUP  BY categoria  
-          """
-
+        GROUP  BY categoria
+        union all
+        SELECT 'day' as tipo 
+        ,DAYNAME(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'))  as dato
+        ,sum(total_pedido-total_dev)  as venta
+        ,WEEK(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'), 1)as impactos
+        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end ) as facturas
+        from RESUMEN_VENTAS rv
+        where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
+        group by WEEK(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'), 1)
+        ,DAYNAME(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'))
+        """
     try:
         with conexion.cursor() as cursor:
             cursor.execute(query)

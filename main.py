@@ -5,7 +5,7 @@ import pandas as pd
 import tempfile
 
 marca='SUPER'
-mes=[11,12]
+mes=[10,11,12]
 sede='bogota'
 paht="resource/img/matplob/chart_image.png"
 chart=chart_generate(title_color="darkblue", title_size=12,brand=marca,sede=sede,path=paht)
@@ -23,10 +23,11 @@ def dataframe_exractor(marca,mes,sede):
     fuente=df[df['tipo']=='Fuente']
     product=df[df['tipo']=='articulo']
     category=df[df['tipo']=='categoria']
-    return month,weekly,group,fuente,product,category
+    day=df[df['tipo']=='day']
+    return month,weekly,group,fuente,product,category,day
 
 # clud charts 
-month,weekly,group,fuente,product,category=dataframe_exractor(marca,mes,sede)
+month,weekly,group,fuente,product,category,day=dataframe_exractor(marca,mes,sede)
 
 cover='resource/img/Local/portada.png'
 dash.add_diapositiva(cover)
@@ -62,7 +63,12 @@ with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
     apiladas_path = f.name  
 dash.add_diapositiva(apiladas_path)
 
+
+
+table_hot=chart.create_headmap(day)
+
 dash.save_pdf()
+
 
 
 
