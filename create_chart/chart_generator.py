@@ -5,7 +5,10 @@ import pandas as pd
 import numpy as np
 from wordcloud import WordCloud
 import seaborn as sns
-import io 
+import io
+# import matplotlib.colors as mcolors
+from matplotlib.table import Table
+
 
 class chart_generate:
     
@@ -16,8 +19,7 @@ class chart_generate:
         self.sede=sede
         self.paht=path
         
-
-        
+            
     # VENTAS SEMANALES 
     def create_week_sales(self,weekly):
         ventas = weekly['venta']
@@ -85,6 +87,7 @@ class chart_generate:
         
         return buf
     
+    
     # CATEGORIAS MAS VENDIDAS
     def procesar_categorias(self, categoria, porcentaje_minimo=5, max_categorias=5):
         total_ventas = categoria['venta'].sum()
@@ -144,10 +147,7 @@ class chart_generate:
         df_procesado = self.procesar_categorias(categoria, porcentaje_minimo=5, max_categorias=5)
 
         return self.create_categoria_apilada(df_procesado)
-
         
-       
-       
         
      # CLOUD      
     def create_cloud(self, producto):
@@ -171,9 +171,8 @@ class chart_generate:
         # plt.show()
 
      
-        #TORTA DE FUENTE
+    #TORTA DE FUENTE
     def create_chartpie(self, fuente):
-    # Definir categorías según la sede
         if self.sede == "boyaca":
             categorias = [
                 "SERVIMAX ASESORES",
@@ -213,8 +212,7 @@ class chart_generate:
                 return "otros"
 
         fuente["categoria"] = fuente["dato"].apply(categorizar)
-
-        # Calcular totales por categoría
+        
         totales_por_categoria = fuente.groupby("categoria")[["venta", "impactos", "facturas"]].sum()
 
         for categoria in categorias:
@@ -269,6 +267,7 @@ class chart_generate:
         plt.close(fig)
         return buf
 
+
     def create_headmap(self,day):
         spanglis = {
         'Monday': 'Lunes',
@@ -291,14 +290,49 @@ class chart_generate:
         dias_orden = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
         heatmap_data = heatmap_data[dias_orden]
 
-
         plt.figure(figsize=(12, 8))
-        sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="YlGnBu", linewidths=.5, cbar_kws={'label': 'Ventas'})
 
-        plt.title("Venta ", fontsize=16)
-        plt.xlabel("Días de la Semana", fontsize=12)
+        formatted_data = heatmap_data.applymap(lambda x: f"$ {x:,.0f}" if pd.notnull(x) else "")
+        sns.heatmap(
+            heatmap_data,
+            annot=formatted_data,
+            fmt="",
+            cmap="YlGnBu",
+            linewidths=.5,
+            cbar_kws={'label': 'Ventas'}
+        )
+        plt.title("Mapa de Calor de Ventas por Semana y Día", fontsize=16)
+        plt.xlabel("", fontsize=12) 
+        plt.xticks(rotation=45, ha='right')  
+        plt.gca().xaxis.tick_top()  
         plt.ylabel("Semanas", fontsize=12)
         plt.tight_layout()
+        # plt.show()
+      
+            
+    def create_table_group(self,grupo):
+        fig, ax = plt.subplots(figsize=(10, len(grupo) * 0.8))
+        ax.axis('off')
+        table = Table(ax, bbox=[0, 0, 1, 1])
+
+        column_labels = ["Grupo", "Venta", "Impactos", "Facturas", "Ticket"]
+        col_widths = [0.2, 0.3, 0.2, 0.2, 0.2]
+
+        for col_idx, label in enumerate(column_labels):
+            cell = table.add_cell(-1, col_idx, width=col_widths[col_idx], height=0.4, 
+                                  text=label, loc='center', facecolor='#40466e')
+            cell.get_text().set_color('white')
+            cell.get_text().set_weight('bold')
+
+        for row_idx, (_, row) in enumerate(grupo.iterrows()):
+            ticket = row['venta'] / row['facturas'] if row['facturas'] != 0 else 0
+
+            values = [row['dato'], f"${row['venta']:,.2f}", row['impactos'], row['facturas'], f"${ticket:,.2f}"]
+
+            for col_idx, value in enumerate(values):
+                table.add_cell(row_idx, col_idx, width=col_widths[col_idx], height=0.3, 
+                               text=value, loc='center', facecolor='white')
+
+        ax.add_table(table)
+        plt.tight_layout()
         plt.show()
-            
-            

@@ -61,6 +61,13 @@ def consult_data(marca,month,sede):
         where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
         group by WEEK(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'), 1)
         ,DAYNAME(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'))
+        UNION ALL
+        SELECT 'General',sum(total_pedido-total_dev)/COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end )
+        ,sum(total_pedido-total_dev) as venta
+        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end )
+        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end )
+        from RESUMEN_VENTAS rv
+        where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
         """
     try:
         with conexion.cursor() as cursor:

@@ -4,7 +4,7 @@ from create_dash.create_pdf import create_pdf
 import pandas as pd
 import tempfile
 
-marca='SUPER'
+marca='SUPER DE ALIMENTOS'
 mes=[10,11,12]
 sede='bogota'
 paht="resource/img/matplob/chart_image.png"
@@ -24,10 +24,11 @@ def dataframe_exractor(marca,mes,sede):
     product=df[df['tipo']=='articulo']
     category=df[df['tipo']=='categoria']
     day=df[df['tipo']=='day']
-    return month,weekly,group,fuente,product,category,day
+    general=df[df['tipo']=='General'] 
+    return month,weekly,group,fuente,product,category,day,general
 
 # clud charts 
-month,weekly,group,fuente,product,category,day=dataframe_exractor(marca,mes,sede)
+month,weekly,group,fuente,product,category,day,general=dataframe_exractor(marca,mes,sede)
 
 cover='resource/img/Local/portada.png'
 dash.add_diapositiva(cover)
@@ -65,7 +66,8 @@ dash.add_diapositiva(apiladas_path)
 
 
 
-table_hot=chart.create_headmap(day)
+# table_hot=chart.create_headmap(day)
+grupo_tabla= chart.create_table_group(group)
 
 dash.save_pdf()
 
