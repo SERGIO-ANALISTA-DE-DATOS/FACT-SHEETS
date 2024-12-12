@@ -67,7 +67,10 @@ dash.add_diapositiva(apiladas_path)
 
 
 # table_hot=chart.create_headmap(day)
-grupo_tabla= chart.create_table_group(group)
+# grupo_tabla= chart.create_table_group(group)
+hmtldash='resource/img/matplob/dashboard_image.png'
+dash.add_diapositiva(hmtldash)
+
 
 dash.save_pdf()
 
