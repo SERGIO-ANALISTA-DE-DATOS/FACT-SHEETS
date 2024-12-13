@@ -1,13 +1,12 @@
 import matplotlib.pyplot as plt 
-import locale 
 import matplotlib.ticker as mticker
 import pandas as pd
 import numpy as np
 from wordcloud import WordCloud
 import seaborn as sns
 import io
-# import matplotlib.colors as mcolors
 from matplotlib.table import Table
+import base64
 
 
 class chart_generate:
@@ -23,7 +22,8 @@ class chart_generate:
     # VENTAS SEMANALES 
     def create_week_sales(self,weekly):
         ventas = weekly['venta']
-        min_venta = ventas.min() 
+        min_venta = ventas.min()
+        max_venta = ventas.max() 
         weekly['dato']=weekly['dato'].astype(int)
         semanas = weekly['dato']
         crecimiento = [0] + [(ventas.iloc[i] - ventas.iloc[i - 1]) / ventas.iloc[i - 1] * 100 if ventas.iloc[i - 1] != 0 else 0 
@@ -32,10 +32,11 @@ class chart_generate:
         fig, ax = plt.subplots(figsize=(10, 6))
     
         ax.bar(semanas, ventas, color='skyblue', alpha=0.7, label="Ventas", width=0.6)
-        ax.set_ylim(bottom=min_venta * 0.9)
+        # ax.set_ylim(bottom=min_venta * 0.9, top=max_venta * 1.07) si le ope no lo tiene
+        ax.set_ylim(bottom=min_venta * 0.9) 
         ax2 = ax.twinx()
         line, = ax2.plot(semanas, [ventas.iloc[i] for i in range(len(ventas))], 
-                         color='orange', marker='o', linestyle='-', label="Crecimiento (%)")
+                         color='orange', marker='o', linestyle='-', label="Crecimiento(%)  ")
     
         for i, porcentaje in enumerate(crecimiento[1:]): 
             color = "green" if porcentaje >= 0 else "red"
@@ -44,22 +45,34 @@ class chart_generate:
     
         ax.set_title(f" Ventas Semanales", fontsize=14, family="serif")
         ax.set_xlabel("Semana")
-        ax.set_ylabel("Ventas")
+        # ax.set_ylabel("Ventas") papu be in title
     
-        ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{int(x):,}'))
+        ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"${x/1_000_000:,.1f} M"))
+        ax.set_xticks(semanas) 
 
+                
         ax2.set_yticks([]) 
-        ax.legend(["Ventas"], loc='upper left', bbox_to_anchor=(1, 1), frameon=False)
-        ax2.legend(["Crecimiento (%)"], loc='upper left', bbox_to_anchor=(1, 0.95), frameon=False)
+        ax.legend(loc='upper right', frameon=False)
+        ax2.legend(loc='upper right', bbox_to_anchor=(0.9, 1.0), frameon=False)
+
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        # Deshabilitar eje Y secundario completamente
+        ax2.set_yticks([])
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
 
         ax.grid(axis='y', linestyle='--', alpha=0.5)
-        plt.tight_layout()
         # plt.show()
+        plt.tight_layout()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')  
         buf.seek(0) 
         plt.close(fig)
-        return buf
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        return img_base64
      
      
     # IMPACTOS VS FACTURAS     
@@ -149,7 +162,7 @@ class chart_generate:
         return self.create_categoria_apilada(df_procesado)
         
         
-     # CLOUD      
+    # CLOUD      
     def create_cloud(self, producto):
         cadena = " ".join([f"{row['dato']} " * int(row['impactos']) for _, row in producto.iterrows()])
         x, y = np.ogrid[:800, :800]  
@@ -267,7 +280,7 @@ class chart_generate:
         plt.close(fig)
         return buf
 
-
+    #MAPA
     def create_headmap(self,day):
         spanglis = {
         'Monday': 'Lunes',
@@ -309,7 +322,7 @@ class chart_generate:
         plt.tight_layout()
         # plt.show()
       
-            
+    #Tabla de grupo        
     def create_table_group(self,grupo):
         fig, ax = plt.subplots(figsize=(10, len(grupo) * 0.8))
         ax.axis('off')

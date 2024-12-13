@@ -4,7 +4,7 @@ from html2image import Html2Image
 hti = Html2Image(output_path='resource/img/matplob')
 
 
-html_file = "dashboard.html"
+html_file = "resource/html/hoja_1.html"
 
 # Generar imagen desde HTML
 hti.screenshot(

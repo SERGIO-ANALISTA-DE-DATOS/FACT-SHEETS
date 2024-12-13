@@ -6,9 +6,10 @@
     <title>Dashboars Servimax</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
-    <style>
+      rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="create_dash/css/pagina_1.css"> -->
+
+     <style>
       :root {
         --color-primary-blue: #2c3e50;
         --color-accent-blue: #3498db;
@@ -113,7 +114,7 @@
       /* Rest of the previous CSS remains the same */
       .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(3, auto);
         gap: 1.5rem;
       }
@@ -121,7 +122,7 @@
       .metrics {
         grid-column: 1 / 5;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
       }
 
@@ -158,7 +159,7 @@
       }
 
       .main-chart {
-        grid-column:5/ 7;
+        grid-column:3/7;
         grid-row: 1 / 3;
         background-color: var(--color-text-light);
         border-radius: 8px;
@@ -178,8 +179,8 @@
       }
 
       .secondary-charts {
-        grid-column: 1 / 5;
-        grid-row: 2 / 4;
+        grid-column: 1 / 3;
+        grid-row: 1 / 3;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(2, 1fr);
@@ -231,11 +232,11 @@
 
       /* img */
       .princi {
-        max-width: 100%; /* La imagen no será más ancha que el contenedor */
-        max-height: 100%; /* La imagen no será más alta que el contenedor */
-        object-fit: contain; /* La imagen se ajustará proporcionalmente dentro del contenedor */
-        width: auto; /* Asegura que la anchura se ajuste si solo la altura es restringida */
-        height: auto; /* Asegura que la altura se ajuste si solo la anchura es restringida */
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        /* width: auto;
+        height: auto; */
       }
     </style>
   </head>
@@ -282,7 +283,7 @@
 
         <div class="main-chart">
           <img
-            src="resource/img/matplob/week.png"
+            src="resource/img/Temporal/ventas_week.png"
             alt="Gráfica Principal"
             class="princi"
           />
@@ -305,10 +306,9 @@
           </div>
           <div class="chart-placeholder">
             <h3>4</h3>
-            <p>Tendencias</p>
+            <p>...</p>
           </div>
         </div>
-
         <div class="additional-info">
           <h3>Resumen</h3>
           <p>Tangamandapio/p></p>

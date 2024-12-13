@@ -1,8 +1,9 @@
 from conectar.extract_data import consult_data
 from create_chart.chart_generator import chart_generate
 from create_dash.create_pdf import create_pdf
+from create_dash.create_html import generate_html
 import pandas as pd
-import tempfile
+# import tempfile
 
 marca='SUPER DE ALIMENTOS'
 mes=[10,11,12]
@@ -10,7 +11,7 @@ sede='bogota'
 paht="resource/img/matplob/chart_image.png"
 chart=chart_generate(title_color="darkblue", title_size=12,brand=marca,sede=sede,path=paht)
 dash=create_pdf(marca=marca,mes=mes,sede=sede,ruta= 'resource/pdfs/pdf_final.pdf')
-
+sheet=generate_html(marca=marca,mes=mes,sede=sede)
 
 def dataframe_exractor(marca,mes,sede):
     data,header=consult_data(marca,mes,sede)
@@ -35,44 +36,56 @@ dash.add_diapositiva(cover)
 
 # Graficas
 semana = chart.create_week_sales(weekly)
-with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-    f.write(semana.getvalue())  
-    semana_path = f.name  
-dash.add_diapositiva(semana_path)
 
-impavsfac = chart.create_vs_imp_facturas(weekly)
-with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-    f.write(impavsfac.getvalue())  
-    impavsfac_path = f.name  
-dash.add_diapositiva(impavsfac_path)
+sheet.pagina_1(semana)
 
-chart_fuente = chart.create_chartpie(fuente)
-with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-    f.write(chart_fuente.getvalue())  
-    chart_fuente_path = f.name  
-dash.add_diapositiva(chart_fuente_path)
 
-# cloudcode = chart.create_cloud(product)
+
+# Logica para guardar imagen 
+# with open('resource/img/Temporal/ventas_week.png', "wb") as f:
+#     f.write(semana.getvalue())
+
 # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-#     f.write(cloudcode.getvalue())
-#     cloudcode_path = f.name
-# dash.add_diapositiva(cloudcode_path)
-
-apiladas = chart.create_categoria(category)
-with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-    f.write(apiladas.getvalue())  
-    apiladas_path = f.name  
-dash.add_diapositiva(apiladas_path)
+#     f.write(semana.getvalue())  
+#     semana_path = f.name  
+# dash.add_diapositiva(semana_path)
 
 
 
-# table_hot=chart.create_headmap(day)
-# grupo_tabla= chart.create_table_group(group)
-hmtldash='resource/img/matplob/dashboard_image.png'
-dash.add_diapositiva(hmtldash)
+
+# impavsfac = chart.create_vs_imp_facturas(weekly)
+# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+#     f.write(impavsfac.getvalue())  
+#     impavsfac_path = f.name  
+# dash.add_diapositiva(impavsfac_path)
+
+# chart_fuente = chart.create_chartpie(fuente)
+# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+#     f.write(chart_fuente.getvalue())  
+#     chart_fuente_path = f.name  
+# dash.add_diapositiva(chart_fuente_path)
+
+# # cloudcode = chart.create_cloud(product)
+# # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+# #     f.write(cloudcode.getvalue())
+# #     cloudcode_path = f.name
+# # dash.add_diapositiva(cloudcode_path)
+
+# apiladas = chart.create_categoria(category)
+# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+#     f.write(apiladas.getvalue())  
+#     apiladas_path = f.name  
+# dash.add_diapositiva(apiladas_path)
 
 
-dash.save_pdf()
+
+# # table_hot=chart.create_headmap(day)
+# # grupo_tabla= chart.create_table_group(group)
+# hmtldash='resource/img/matplob/dashboard_image.png'
+# dash.add_diapositiva(hmtldash)
+
+
+# dash.save_pdf()
 
 
 
