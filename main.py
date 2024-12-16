@@ -3,7 +3,7 @@ from create_chart.chart_generator import chart_generate
 from create_dash.create_pdf import create_pdf
 from create_dash.create_html import generate_html
 import pandas as pd
-# import tempfile
+import tempfile
 
 marca='SUPER DE ALIMENTOS'
 mes=[10,11,12]
@@ -36,14 +36,14 @@ dash.add_diapositiva(cover)
 
 # Graficas
 semana = chart.create_week_sales(weekly)
+impavsfac = chart.create_vs_imp_facturas(weekly)
 
-sheet.pagina_1(semana)
-
+sheet.pagina_1(semana,impavsfac,general) 
 
 
 # Logica para guardar imagen 
-# with open('resource/img/Temporal/ventas_week.png', "wb") as f:
-#     f.write(semana.getvalue())
+# with open('resource/img/Temporal/impactos_week.png', "wb") as f:
+#     f.write(impavsfac.getvalue())
 
 # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
 #     f.write(semana.getvalue())  
