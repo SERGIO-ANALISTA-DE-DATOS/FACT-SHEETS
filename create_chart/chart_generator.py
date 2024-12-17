@@ -32,7 +32,6 @@ class chart_generate:
         fig, ax = plt.subplots(figsize=(10, 6))
     
         ax.bar(semanas, ventas, color='skyblue', alpha=0.7, label="Ventas", width=0.6)
-        # ax.set_ylim(bottom=min_venta * 0.9, top=max_venta * 1.07) si le ope no lo tiene
         ax.set_ylim(bottom=min_venta * 0.9) 
         ax2 = ax.twinx()
         line, = ax2.plot(semanas, [ventas.iloc[i] for i in range(len(ventas))], 
@@ -65,14 +64,13 @@ class chart_generate:
         ax2.spines['right'].set_visible(False)
 
         ax.grid(axis='y', linestyle='--', alpha=0.5)
-        # plt.show()
         plt.tight_layout()
         buf = io.BytesIO()
-        plt.savefig(buf, format='png')  
+        plt.savefig(buf, format='png')
+        plt.close() 
         buf.seek(0) 
-        plt.close(fig)
         img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return img_base64
+        return img_base64,buf
      
      
     # IMPACTOS VS FACTURAS     
@@ -80,6 +78,7 @@ class chart_generate:
         
         impactos = weekly['impactos']
         facturas = weekly['facturas']
+        facturas = facturas.astype(int) 
         semana = weekly['dato']
         
         fig, ax = plt.subplots()
@@ -93,15 +92,13 @@ class chart_generate:
         plt.title("Facturas vs impactos")
         ax.set_xlabel("Semana")
         plt.grid(True)
-        # plt.show()
         plt.tight_layout()
         buf = io.BytesIO()
-        plt.savefig(buf, format='png')  
+        plt.savefig(buf, format='png')
+        plt.close()
         buf.seek(0) 
-        plt.close(fig)
         img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return img_base64
-    
+        return img_base64,buf
     
     # CATEGORIAS MAS VENDIDAS
     def procesar_categorias(self, categoria, porcentaje_minimo=5, max_categorias=5):
@@ -307,7 +304,11 @@ class chart_generate:
 
         plt.figure(figsize=(12, 8))
 
-        formatted_data = heatmap_data.applymap(lambda x: f"$ {x:,.0f}" if pd.notnull(x) else "")
+        formatted_data = heatmap_data.apply(
+            lambda row: [f"$ {x:,.0f}" if pd.notnull(x) else "" for x in row], axis=1
+        )
+        formatted_data = pd.DataFrame(formatted_data.tolist(), index=heatmap_data.index, columns=heatmap_data.columns)
+
         sns.heatmap(
             heatmap_data,
             annot=formatted_data,
@@ -322,7 +323,10 @@ class chart_generate:
         plt.gca().xaxis.tick_top()  
         plt.ylabel("Semanas", fontsize=12)
         plt.tight_layout()
-        # plt.show()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')  
+        buf.seek(0) 
+        return buf
       
     #Tabla de grupo        
     def create_table_group(self,grupo):

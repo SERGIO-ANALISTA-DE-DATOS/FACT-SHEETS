@@ -3,7 +3,7 @@ def consult_data(marca,month,sede):
     mes_str = ','.join(map(str, month))
     conexion= conectar_bd()
     query=F"""
-         SELECT 
+        SELECT 
 	    'mensual'as tipo,MONTH (STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'))dato 
         ,sum(total_pedido-total_dev) as venta
         ,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end ) as impactos
@@ -62,13 +62,33 @@ def consult_data(marca,month,sede):
         group by WEEK(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'), 1)
         ,DAYNAME(STR_TO_DATE(CONCAT(anio, '-', LPAD(mes, 2, '0'), '-', LPAD(dia, 2, '0')), '%Y-%m-%d'))
         UNION ALL
-        SELECT 'General',sum(total_pedido-total_dev)/COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end )
+        SELECT 'general'                	
+        ,re.recompra			  	
+        ,base.venta/base.pedido	
+        ,base.impac 							
+        ,base.devolucion               
+        from (
+        SELECT 10 as id
         ,sum(total_pedido-total_dev) as venta
-        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end )
-        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end )
+        ,sum(total_dev)/sum(total_pedido)*100 as devolucion
+        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end ) as impac
+        ,COUNT(DISTINCT case when total_pedido-total_dev>0 then numero_pedido end ) as pedido
         from RESUMEN_VENTAS rv
         where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
+        )base
+        join(
+        SELECT 10 as id 
+        ,count(DISTINCT CASE when transacciones>1 then fiel end) /COUNT(DISTINCT fiel)*100   as recompra
+        from (
+        SELECT empresa as fiel, COUNT( DISTINCT CASE when total_pedido-total_dev>0 then numero_pedido end) as transacciones
+        from RESUMEN_VENTAS rv 
+        where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
+        Group by empresa 
+        ) í
+        )re on re.id =base.id
         """
+    # print(query)
+    # input()    
     try:
         with conexion.cursor() as cursor:
             cursor.execute(query)

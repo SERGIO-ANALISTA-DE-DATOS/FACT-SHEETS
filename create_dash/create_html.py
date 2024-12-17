@@ -1,4 +1,4 @@
-# import pandas
+import math
 class generate_html:
     def __init__(self,marca,mes,sede):
         self.marca=marca
@@ -6,20 +6,28 @@ class generate_html:
         self.sede=sede
     
     
-    def pagina_1(self,Gsemana,impavsfac,general):
+    
+    def pagina_1(self,Gsemana,impavsfac,general,facturas,venta):
+      def formatear_venta(venta):
+        if venta >= 1_000_000: 
+            return "{:.1f} M".format(venta / 1_000_000)
+        elif venta >= 1_000:
+            return "{:,}".format(math.ceil(venta)).replace(",", ".")
+        else:
+            return "{:,}".format(math.ceil(venta)).replace(",", ".")
       # cajas info
-      impactos=general['impactos'].iloc[0]
-      facturas=general['facturas'].iloc[0]
-      recompra=general['venta'].iloc[0]
-      venta=general['dato'].iloc[0]
-      
-      print(impactos)
-      print(facturas)
-      print(recompra)
-      print(venta)
-      
+      impactos=general['impactos'].iloc[0]    
+      recompra=general['dato'].iloc[0]
+      devolucion=general['facturas'].iloc[0]
+      tiket=general['venta'].iloc[0]
+      # Modelado de datos:
+      venta=formatear_venta(venta)
+      tiket=formatear_venta(tiket)
+      devolucion=round(devolucion,1)
+      recompra=round(float(recompra),1)
+      facturas=int(facturas)
       css="""
-<style>
+      <style>
      :root {
        --color-primary-blue: #2c3e50;
        --color-accent-blue: #3498db;
@@ -149,8 +157,8 @@ class generate_html:
        justify-content: center;
      }
   
-     .metric-card .icon {
-       font-size: 2.3rem;
+      .metric-card .icon {
+       font-size: 2.1rem;
        margin-top: 0.3rem;
        color: var(--color-highlight);
        opacity: 0.8;
@@ -158,7 +166,7 @@ class generate_html:
   
      .metric-card h2 {
        color: var(--color-primary-blue);
-       font-size: 1.8rem;
+       font-size: 1.5rem;
        /* margin-bottom: 0.5rem; */
      }
   
@@ -232,100 +240,101 @@ class generate_html:
    </style>
         """
       html=f"""
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Dashboars Servimax</title>
-            <link
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-              rel="stylesheet"/>
-        </head>
-            {css}
-            <body>
-    <div class="dashboard">
-      <div class="header-container">
-        <img
-          src="https://storage.googleapis.com/attachments-servimax-isa/servimaxHomePage/ServimaxIconText.png"
-          alt="Servimax Logo"
-          class="logo"
-        />
-
-        <div class="header">
-          <h1>Aqui va la marca</h1>
-          <div class="subtitle">
-            Análisis Integral de Rendimiento Corporativo
-          </div>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="metrics">
-          <div class="metric-card">
-            <i class="icon fas fa-users"></i>
-            <h2>{impactos}</h2>
-            <p>impactos</p>
-          </div>
-          <div class="metric-card">
-            <i class="icon fas fa-project-diagram"></i>
-            <h2>85%</h2>
-            <p>Facturas</p>
-          </div>
-          <div class="metric-card">
-            <i class="icon fas fa-dollar-sign"></i>
-            <h2>$45K</h2>
-            <p>Ventas Totales</p>
-          </div>
-          <div class="metric-card">
-            <i class="icon fas fa-project-diagram"></i>
-            <h2>129</h2>
-            <p>TIket</p>
-          </div>
-          <div class="metric-card">
-            <i class="icon fas fa-info-circle"></i>
-            <h2>+15%</h2>
-            <p>Tasa de retencion</p>
-          </div>
-          <div class="metric-card">
-            <i class="icon fas fa-chart-line"></i>
-            <h2>35%</h2>
-            <p>Tasa de recompra</p>
-          </div>
-        </div>
-
-        <div class="secondary-charts">
-          <img
-            src="data:image/png;base64,{Gsemana}
-            alt="Gráfica Principal"
-            class="princi"
-          />
-        </div>
-
-        <div class="main-chart">
-          <img
-            src="data:image/png;base64,{impavsfac}
-            alt="grafica secundaria"
-            class="princi"
-          />
-        </div>
-
-        <div class="last-row">
-          <div class="last-row-left">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboars Servimax</title>
+    <link rel="stylesheet" href="/resource/html/all.min.css"/>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"/>
+</head>
+    {css}
+        <body>
+        <div class="dashboard">
+          <div class="header-container">
             <img
-              src="data:image/png;base64,{impavsfac}
-              alt="grafica secundaria"
-              class="princi"
+              src="https://storage.googleapis.com/attachments-servimax-isa/servimaxHomePage/logo2.0.png"
+              alt="Servimax Logo"
+              class="logo"
             />
+
+            <div class="header">
+              <h1>{self.marca}</h1>
+              <div class="subtitle">
+                Análisis Integral de Rendimiento Corporativo
+              </div>
+            </div>
           </div>
-          <div class="div-conclucion">
-            <h3>Analisis y tendencias</h3>
+
+          <div class="dashboard-grid">
+            <div class="metrics">
+              <div class="metric-card">
+                <i class="icon fas fa-users"></i>
+                <h2>{impactos}</h2>
+                <p>impactos</p>
+              </div>
+              <div class="metric-card">
+                <i class="icon fas fa-project-diagram"></i>
+                <h2>{facturas}</h2>
+                <p>Facturas</p>
+              </div>
+              <div class="metric-card">
+                <i class="icon fas fa-dollar-sign"></i>
+                <h2>${venta}</h2>
+                <p>Ventas Totales</p>
+              </div>
+              <div class="metric-card">
+                <i class="icon fas fa-project-diagram"></i>
+                <h2>${tiket}</h2>
+                <p>TIket</p>
+              </div>
+              <div class="metric-card">
+                <i class="icon fas fa-info-circle"></i>
+                <h2>{recompra}%</h2>
+                <p>Tasa de recompra</p>
+              </div>
+              <div class="metric-card">
+                <i class="icon fas fa-chart-line"></i>
+                <h2>{devolucion}%</h2>
+                <p>Tasa de Devolución</p>
+              </div>
+            </div>
+
+            <div class="secondary-charts">
+              <img
+                src="data:image/png;base64,{Gsemana}"
+                alt="Gráfica Principal"
+                class="princi"
+              />
+            </div>
+
+            <div class="main-chart">
+              <img
+                src="data:image/png;base64,{impavsfac}"
+                alt="grafica secundaria"
+                class="princi"
+              />
+            </div>
+
+            <div class="last-row">
+              <div class="last-row-left">
+                <img
+                  src="data:image/png;base64,{impavsfac}"
+                  alt="grafica secundaria"
+                  class="princi"
+                />
+              </div>
+              <div class="div-conclucion">
+                <h3>Analisis y tendencias</h3>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </body>
-</html>
+      </body>
+    </html>
         """
     
     
