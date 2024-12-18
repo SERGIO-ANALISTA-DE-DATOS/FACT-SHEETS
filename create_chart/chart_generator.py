@@ -89,7 +89,7 @@ class chart_generate:
             ax.text(semana.iloc[i], facturas.iloc[i]+5.0, f"{facturas.iloc[i]}", ha='center', va='bottom', fontsize=7, color="blue")
 
         plt.legend(["Impactos", "Facturas"])
-        plt.title("Facturas vs impactos")
+        plt.title("Facturas & impactos")
         ax.set_xlabel("Semana")
         plt.grid(True)
         plt.tight_layout()
@@ -160,6 +160,72 @@ class chart_generate:
 
         return self.create_categoria_apilada(df_procesado)
         
+    
+    #GRAFICO DE EMBUDO
+    def create_embudo(self, escalones):
+        valores = escalones[::-1]
+        etapas = ['Maestra', 'Pidieron', 'Compra', 
+                  '+3 pedidos', '+5 pedidos'][::-1]
+        
+        # Crear figura y ejes
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Calcular valores para el embudo (ahora más ancho arriba)
+        width = np.array([0.9, 0.8, 0.7, 0.6, 0.5])[::-1] * max(valores)
+        y_pos = np.arange(len(etapas)) * 0.9
+        
+        # Crear barras horizontales centradas
+        left = (max(valores) - width) / 2
+        
+        # Valor inicial (Maestra) para calcular porcentajes
+        valor_inicial = valores[-1]  # El último después de invertir
+        
+        # Dibujar las barras del embudo
+        bars = ax.barh(y_pos, width, left=left, height=0.8, 
+                      color=['#2ecc71', '#3498db', '#9b59b6', '#e74c3c', '#f1c40f'])
+        
+        # Añadir etiquetas
+        for i, bar in enumerate(bars):
+            # Etiqueta de la etapa
+            ax.text(-0.1, y_pos[i], etapas[i], 
+                   ha='right', va='center', fontsize=10)
+            
+            # Valor numérico
+            ax.text(max(valores)/2, y_pos[i], f'{valores[i]:,}', 
+                   ha='center', va='center', fontweight='bold', color='white')
+            
+            # Porcentaje respecto al valor inicial (excepto para Maestra)
+            if i < len(valores) - 1:  # No mostrar porcentaje para Maestra
+                porcentaje = (valores[i] / valor_inicial) * 100
+                ax.text(max(valores) + 100, y_pos[i], 
+                       f'↓{porcentaje:.1f}%', ha='left', va='center', 
+                       color='#7f8c8d', fontsize=9)
+
+        # Configurar el aspecto
+        ax.set_xlim(-max(valores)*0.3, max(valores)*1.2)
+        ax.set_ylim(-0.5, max(y_pos) + 0.5)
+        
+        # Eliminar ejes
+        ax.set_xticks([])
+        ax.set_yticks([])
+        
+        # Eliminar bordes
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+            
+        # Título
+        plt.title('Análisis de Embudo de Conversión', pad=20, fontsize=14)
+        
+        # Ajustar layout
+        plt.tight_layout()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close()
+        buf.seek(0) 
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        return img_base64,buf
+         
+    
         
     # CLOUD      
     def create_cloud(self, producto):
@@ -279,7 +345,7 @@ class chart_generate:
         plt.close(fig)
         return buf
 
-    #MAPA
+    #SEMNAL DIAS HEADMAP
     def create_headmap(self,day):
         spanglis = {
         'Monday': 'Lunes',

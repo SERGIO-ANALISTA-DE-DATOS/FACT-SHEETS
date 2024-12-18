@@ -1,4 +1,4 @@
-from conectar.extract_data import consult_data
+from conectar.extract_data import consult_data,quey_embudo
 from create_chart.chart_generator import chart_generate
 from create_dash.create_pdf import create_pdf
 from create_dash.create_html import generate_html
@@ -28,10 +28,14 @@ def dataframe_exractor(marca,mes,sede):
     category=df[df['tipo']=='categoria']
     day=df[df['tipo']=='day']
     
-    return month,weekly,group,fuente,product,category,day,general
+    
+    #embudo: 
+    escalon=quey_embudo(marca,mes,sede)
+    
+    return month,weekly,group,fuente,product,category,day,general,escalon
 
 #main var 
-month,weekly,group,fuente,product,category,day,general=dataframe_exractor(marca,mes,sede)
+month,weekly,group,fuente,product,category,day,general,escalon=dataframe_exractor(marca,mes,sede)
 
 #totalizado 
 total_venta=month['venta'].sum()
@@ -49,6 +53,13 @@ with open('resource/img/Temporal/ventas_week.png', "wb") as f:
 
 impavsfac,buf = chart.create_vs_imp_facturas(weekly)
 with open('resource/img/Temporal/impactos_week.png', "wb") as f:
+    f.write(buf.getvalue())
+
+
+
+    
+embudo,buf=chart.create_embudo(escalon)    
+with open('resource/img/Temporal/embudo_week.png', "wb") as f:
     f.write(buf.getvalue())
 
 sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta) 

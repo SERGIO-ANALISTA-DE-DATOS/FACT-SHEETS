@@ -97,7 +97,44 @@ def consult_data(marca,month,sede):
             return respueta,encabezados
     finally:
         conexion.close()
-        
-        
+ 
+def quey_embudo(marca,month,sede):
+    mes_str = ','.join(map(str, month))
+    conexion= conectar_bd()
+    salida_fin=[]
+    query=f"""
+        SELECT maestra.cantidad , sub.pedido,sub.compra,fiel.fielone,fiel.fieltwo
+        from (
+        SELECT 1 as id,COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end ) as cantidad
+        from RESUMEN_VENTAS rv
+        where sede  = '{sede}' and marca in ('{marca}')
+        )maestra
+        join(
+        SELECT 1 as id,COUNT(DISTINCT empresa) as pedido,
+        COUNT(DISTINCT case when total_pedido-total_dev>0 then empresa end )as compra
+        from RESUMEN_VENTAS rv
+        where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
+        ) sub on sub.id = maestra.id
+        join (
+        	SELECT 1 as id  
+	        ,count(DISTINCT CASE when transacciones>3 then fiel end)fielone
+	        ,count(DISTINCT CASE when transacciones>4 then fiel end) as fieltwo
+        	from (
+        	SELECT empresa as fiel, COUNT( DISTINCT CASE when total_pedido-total_dev>0 then numero_pedido end) as transacciones
+        	from RESUMEN_VENTAS rv 
+        	where mes in ({mes_str}) and sede  = '{sede}' and marca in ('{marca}')
+        	Group by empresa 
+        	) fiel
+        )fiel on fiel.id=sub.id 
+    
+    """        
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute(query)
+            resultadoParcial = cursor.fetchall()
+            salida_fin = list(resultadoParcial[0]) 
+            return salida_fin    
+    finally:
+        conexion.close()    
         
         

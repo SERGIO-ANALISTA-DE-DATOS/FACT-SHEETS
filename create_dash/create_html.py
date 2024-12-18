@@ -56,11 +56,15 @@ class generate_html:
      }
   
      .dashboard {
-       max-width: 1200px;
-       margin: 0 auto;
-       padding: 0.2rem;
-       position: relative;
-     }
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 0;
+      margin: 0;
+      flex-direction: column;
+    }
   
      .header-container {
        display: flex;
@@ -70,12 +74,12 @@ class generate_html:
          var(--color-corpo1) 0%,
          var(--color-coropo2) 100%
        );
-       border-radius: 8px;
        padding: 1rem; /* Adjusted from 1.5rem to reduce height */
        margin-bottom: 1rem;
        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
        position: relative;
        overflow: hidden;
+       height: 15%;
      }
   
      .header-container::before {
@@ -142,7 +146,9 @@ class generate_html:
        grid-template-columns: repeat(6, 1fr);
        gap: 1rem;
        height: 50px;
-       margin-bottom: 5%;
+       margin-bottom: 3.4%;
+       margin-left: 5px;
+       margin-right: 5px;
      }
   
      .metric-card {
@@ -183,7 +189,7 @@ class generate_html:
        border-radius: 8px;
        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
        border: 1px solid var(--color-border);
-       height: 330px;
+       height: 290px;
      }
   
      .main-chart {
@@ -197,7 +203,7 @@ class generate_html:
          flex-direction: column;
          align-items: center;
          justify-content: center;
-         height: 330px;
+         height: 290px;
      }
   
      .main-chart h3, 
@@ -253,6 +259,9 @@ class generate_html:
 </head>
     {css}
         <body>
+        <!-- imagen oculta para dar tiempo de renderizado -->
+          <img src="https://cdn-icons-png.freepik.com/256/10042/10042887.png?semt=ais_hybrid" alt="" style="width: 1px; height: 1px; visibility: hidden;" >
+          <img src="https://media.istockphoto.com/id/1151557689/vector/vector-image-of-a-flat-isolated-icon-dollar-sign-currency-exchange-dollar-united-states.jpg?s=1024x1024&w=is&k=20&c=wtyPBkx4KX1U_CcsRuFH23hbLogVVWYioJzDXbk30Y8=23Trr" alt="" style="width: 1px; height: 1px; visibility: hidden;" >
         <div class="dashboard">
           <div class="header-container">
             <img
@@ -340,3 +349,6 @@ class generate_html:
     
       with open("resource/html/hoja_1.html", "w") as file:
             file.write(html)    
+            
+            
+            
