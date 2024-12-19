@@ -5,7 +5,7 @@ import time
 hti = Html2Image(output_path='resource/img/matplob')
 time.sleep(2)
 
-html_file = "resource/html/hoja_1.html"
+html_file = "resource/html/hoja_2.html"
 time.sleep(2)
 
 # Generar imagen desde HTML

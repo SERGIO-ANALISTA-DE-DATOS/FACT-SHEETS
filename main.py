@@ -6,7 +6,7 @@ import pandas as pd
 import tempfile
 
 marca='ALIMENTOS POLAR COLOMBIA S.A.S.'
-mes=[11,12]
+mes=[10,11,12]
 sede='bogota'
 paht="resource/img/matplob/chart_image.png"
 chart=chart_generate(title_color="darkblue", title_size=12,brand=marca,sede=sede,path=paht)
@@ -42,27 +42,43 @@ total_venta=month['venta'].sum()
 tota_facturas=month['facturas'].sum()
 
 
-
 cover='resource/img/Local/portada.png'
 dash.add_diapositiva(cover)
 
-# Graficas
-semana,buf = chart.create_week_sales(weekly)
-with open('resource/img/Temporal/ventas_week.png', "wb") as f:
-    f.write(buf.getvalue())
+# pagina 1
+# semana,buf = chart.create_week_sales(weekly)
+# with open('resource/img/Temporal/ventas_week.png', "wb") as f:
+#     f.write(buf.getvalue())
 
-impavsfac,buf = chart.create_vs_imp_facturas(weekly)
-with open('resource/img/Temporal/impactos_week.png', "wb") as f:
-    f.write(buf.getvalue())
+# impavsfac,buf = chart.create_vs_imp_facturas(weekly)
+# with open('resource/img/Temporal/impactos_week.png', "wb") as f:
+#     f.write(buf.getvalue())
 
-
-
+ 
+# embudo,buf=chart.create_embudo(escalon)    
+# with open('resource/img/Temporal/embudo_week.png', "wb") as f:
+#     f.write(buf.getvalue())
     
-embudo,buf=chart.create_embudo(escalon)    
-with open('resource/img/Temporal/embudo_week.png', "wb") as f:
-    f.write(buf.getvalue())
 
-sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta) 
+# sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta,embudo) 
+
+# pagina 2
+headmap,buf=chart.create_headmap(day)
+with open('resource/img/Temporal/tabal_caliente.png', "wb") as f:
+    f.write(buf.getvalue())
+    
+chart_fuente,buf = chart.create_chartpie(fuente)
+with open('resource/img/Temporal/charpie_fuente.png', "wb") as f:
+    f.write(buf.getvalue())   
+    
+    
+
+sheet.pagina_2(headmap)
+
+
+
+
+
 
 
 # Logica para guardar imagen 
@@ -73,20 +89,6 @@ sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta)
 #     semana_path = f.name  
 # dash.add_diapositiva(semana_path)
 
-
-
-
-# impavsfac = chart.create_vs_imp_facturas(weekly)
-# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-#     f.write(impavsfac.getvalue())  
-#     impavsfac_path = f.name  
-# dash.add_diapositiva(impavsfac_path)
-
-# chart_fuente = chart.create_chartpie(fuente)
-# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-#     f.write(chart_fuente.getvalue())  
-#     chart_fuente_path = f.name  
-# dash.add_diapositiva(chart_fuente_path)
 
 # # cloudcode = chart.create_cloud(product)
 # # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
@@ -102,9 +104,7 @@ sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta)
 
 
 
-# table_hot=chart.create_headmap(day)
-# with open('resource/img/Temporal/tabal_caliente.png', "wb") as f:
-#     f.write(table_hot.getvalue())
+
 
 
 # grupo_tabla= chart.create_table_group(group)

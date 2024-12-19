@@ -7,7 +7,7 @@ class generate_html:
     
     
     
-    def pagina_1(self,Gsemana,impavsfac,general,facturas,venta):
+    def pagina_1(self,Gsemana,impavsfac,general,facturas,venta,embudo):
       def formatear_venta(venta):
         if venta >= 1_000_000: 
             return "{:.1f} M".format(venta / 1_000_000)
@@ -53,6 +53,7 @@ class generate_html:
        background-color: var(--color-background);
        color: var(--color-text-dark);
        line-height: 1.6;
+       background-color:#e5ffe1; 
      }
   
      .dashboard {
@@ -107,10 +108,11 @@ class generate_html:
      }
   
      .header h1 {
-       font-weight: 300;
-       font-size: 2.5rem;
+       font-weight: 400;
+       font-size: 2.0rem;
        color: var(--color-text-light);
-       margin-bottom: 0.5rem;
+       margin-bottom: 0.2rem;
+       margin-top: 1%;
        position: relative;
        display: inline-block;
      }
@@ -124,9 +126,9 @@ class generate_html:
      .header h1::after {
        content: "";
        position: absolute;
-       bottom: -10px;
+       bottom: -1px;
        left: 0;
-       width: 70%;
+       width: 60%;
        height: 4px;
        background-color: var(--color-highlight);
        border-radius: 2px;
@@ -217,23 +219,16 @@ class generate_html:
        grid-column: 1 / 6;
        grid-row: 3 / 4;
        display: grid;
-       grid-template-columns: 58% 40%;
+       grid-template-columns: 48% 50%;
        gap: 1.5rem;
-       height:300px;
+       height:270;
      }
      .last-row-left{
-         height: 335px;
+         height: 270px;
      }
-     /* .div-conclucion{
-         margin-left: 12%;
-         width:350px;
-         height: 258;
-         margin-top: 3%;
-     } */
-  
      .last-row > div {
        background-color: var(--color-text-light);
-       border-radius: 8px;
+       border-radius: 3px;
        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
        border: 1px solid var(--color-border);
      }
@@ -243,6 +238,29 @@ class generate_html:
        height: 100%;
        object-fit: fill;
      }
+     .div-conclucion {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      height: 100%; 
+      text-align: center;
+      padding: 1rem; 
+    }
+
+    .div-conclucion h3 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--color-primary-blue);
+      margin-bottom: 1rem; 
+    }
+
+    .div-conclucion p {
+      font-size: 1.4rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--color-text-dark);
+    }
    </style>
         """
       html=f"""
@@ -331,14 +349,18 @@ class generate_html:
             <div class="last-row">
               <div class="last-row-left">
                 <img
-                  src="data:image/png;base64,{impavsfac}"
-                  alt="grafica secundaria"
+                  src="data:image/png;base64,{embudo}"
+                  alt="grafica de embudo"
                   class="princi"
                 />
               </div>
-              <div class="div-conclucion">
-                <h3>Analisis y tendencias</h3>
-              </div>
+               <div class="div-conclucion">
+            <h3>Analisis y tendencias</h3>
+            <p>
+              Los datos muestran un incremento constante en las métricas clave,
+              indicando una tendencia positiva en la participación del usuario.
+            </p>
+          </div>
             </div>
           </div>
         </div>
@@ -350,5 +372,161 @@ class generate_html:
       with open("resource/html/hoja_1.html", "w") as file:
             file.write(html)    
             
-            
+    def pagina_2(self,headmap):
+      css="""
+          <style>
+        :root {
+            --color-corpo1: #16c263;
+            --color-coropo2: #9dd33e;
+            --color-border: #24a853;
+            --color-text-light: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e5ffe1;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        }
+
+        .dashboard {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--color-corpo1) 0%, var(--color-coropo2) 100%);
+            padding: 1rem;
+            height: 15vh;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-right: 2rem;
+        }
+
+        .header h1 {
+            color: var(--color-text-light);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .content-container {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .row-1 {
+            display: flex;
+            gap: 1rem;
+            height: 40vh;
+        }
+
+        .row-2 {
+            display: flex;
+            gap: 1rem;
+            height: 40vh;
+        }
+
+        .chart-box {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+        }
+
+        .chart-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .box-40 {
+            flex: 0 0 40%;
+        }
+
+        .box-20 {
+            flex: 0 0 20%;
+        }
+
+        .box-50 {
+            flex: 0 0 50%;
+        }
+
+        .box-30 {
+            flex: 0 0 30%;
+        }
+        </style>
+      """ 
+      html=f"""
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Dashboard Servimax</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+        {css}
+        </head>
+        <body>
+            <div class="dashboard">
+                <!-- Header -->
+                <div class="header-container">
+                    <img src="https://storage.googleapis.com/attachments-servimax-isa/servimaxHomePage/logo2.0.png" 
+                         alt="Servimax Logo" 
+                         class="logo"/>
+                    <div class="header">
+                        <h1>Dashboard</h1>
+                        <div class="subtitle">Análisis Integral de Rendimiento Corporativo</div>
+                    </div>
+                </div>
+        
+                <!-- Content -->
+                <div class="content-container">
+                    <!-- Primera fila: 40% - 20% - 40% -->
+                    <div class="row-1">
+                        <div class="chart-box box-40">
+                            <img src="data:image/png;base64,{headmap}" 
+                            alt="mapa de calor"/>
+                        </div>
+                        <div class="chart-box box-20">
+                            <img src="https://images.datacamp.com/image/upload/v1680170106/image7_b3b38c8736.png" alt="Gráfica 2"/>
+                        </div>
+                        <div class="chart-box box-40">
+                            <img src="https://images.datacamp.com/image/upload/v1680170106/image7_b3b38c8736.png" alt="Gráfica 3"/>
+                        </div>
+                    </div>
+        
+                    <!-- Segunda fila: 20% - 50% - 30% -->
+                    <div class="row-2">
+                        <div class="chart-box box-20">
+                            <img src="https://images.datacamp.com/image/upload/v1680170106/image7_b3b38c8736.png" alt="Gráfica 4"/>
+                        </div>
+                        <div class="chart-box box-50">
+                            <img src="https://images.datacamp.com/image/upload/v1680170106/image7_b3b38c8736.png" alt="Gráfica 5"/>
+                        </div>
+                        <div class="chart-box box-30">
+                            <img src="https://images.datacamp.com/image/upload/v1680170106/image7_b3b38c8736.png" alt="Gráfica 6"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+    """
+      with open("resource/html/hoja_2.html", "w") as file:
+             file.write(html)            
             

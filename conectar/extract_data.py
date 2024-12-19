@@ -126,7 +126,6 @@ def quey_embudo(marca,month,sede):
         	Group by empresa 
         	) fiel
         )fiel on fiel.id=sub.id 
-    
     """        
     try:
         with conexion.cursor() as cursor:
