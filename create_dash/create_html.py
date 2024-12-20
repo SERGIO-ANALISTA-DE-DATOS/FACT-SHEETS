@@ -53,7 +53,6 @@ class generate_html:
        background-color: var(--color-background);
        color: var(--color-text-dark);
        line-height: 1.6;
-       background-color:#e5ffe1; 
      }
   
      .dashboard {
@@ -372,7 +371,7 @@ class generate_html:
       with open("resource/html/hoja_1.html", "w") as file:
             file.write(html)    
             
-    def pagina_2(self,headmap):
+    def pagina_2(sel1f,headmap,chart_fuente):
       css="""
           <style>
         :root {
@@ -527,6 +526,6 @@ class generate_html:
         </body>
         </html>
     """
-      with open("resource/html/hoja_2.html", "w") as file:
+      with open("resource/html/hoja_2.1.html", "w") as file:
              file.write(html)            
             

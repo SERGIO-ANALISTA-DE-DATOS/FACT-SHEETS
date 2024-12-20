@@ -286,13 +286,13 @@ class chart_generate:
         total_impactos = totales_por_categoria["impactos"].sum()
         total_facturas = totales_por_categoria["facturas"].sum()
 
-        fig, axes = plt.subplots(3, 4, figsize=(10, 9))
-        fig.subplots_adjust(hspace=0.0, wspace=0.0)
+        fig, axes = plt.subplots(3, 4, figsize=(10, 8), gridspec_kw={'wspace': 0.0, 'hspace': -0.3})
+        fig.subplots_adjust(left=0.95, right=0.95,  bottom=10, hspace=0.1)
         metricas = ["venta", "impactos", "facturas"]
         totales_globales = [total_ventas, total_impactos, total_facturas]
-        titulos_metricas = ["Ventas", "Impactos", "Facturas"]
-
+        titulos_metricas = ["VENTA", "IMPACTOS", "FACTURAS"]
         for i, metrica in enumerate(metricas):
+            fig.text(0.5, 0.5 - i * 0.31, titulos_metricas[i], va='center', ha='center', fontsize=42, rotation=90)
             total_global = totales_globales[i]
             vnt = True if i == 0 else False
             for j, categoria in enumerate(categorias):
@@ -413,4 +413,9 @@ class chart_generate:
 
         ax.add_table(table)
         plt.tight_layout()
-        plt.show()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close()
+        buf.seek(0) 
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        return img_base64,buf

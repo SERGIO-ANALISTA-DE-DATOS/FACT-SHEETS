@@ -63,25 +63,25 @@ dash.add_diapositiva(cover)
 # sheet.pagina_1(semana,impavsfac,general,tota_facturas,total_venta,embudo) 
 
 # pagina 2
-headmap,buf=chart.create_headmap(day)
-with open('resource/img/Temporal/tabal_caliente.png', "wb") as f:
-    f.write(buf.getvalue())
+# headmap,buf=chart.create_headmap(day)
+# with open('resource/img/Temporal/tabal_caliente.png', "wb") as f:
+#     f.write(buf.getvalue())
     
-chart_fuente,buf = chart.create_chartpie(fuente)
-with open('resource/img/Temporal/charpie_fuente.png', "wb") as f:
-    f.write(buf.getvalue())   
+# chart_fuente,buf = chart.create_chartpie(fuente)
+# with open('resource/img/Temporal/charpie_fuente.png', "wb") as f:
+#     f.write(buf.getvalue())   
     
+grupo_tabla,buf= chart.create_table_group(group)
+with open('resource/img/Temporal/tableGrupo_fuente.png', "wb") as f:
+    f.write(buf.getvalue())  
     
 
-sheet.pagina_2(headmap)
+# sheet.pagina_2(headmap,chart_fuente)
 
 
 
 
 
-
-
-# Logica para guardar imagen 
 
 
 # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
@@ -90,11 +90,11 @@ sheet.pagina_2(headmap)
 # dash.add_diapositiva(semana_path)
 
 
-# # cloudcode = chart.create_cloud(product)
-# # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
-# #     f.write(cloudcode.getvalue())
-# #     cloudcode_path = f.name
-# # dash.add_diapositiva(cloudcode_path)
+# cloudcode = chart.create_cloud(product)
+# with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+#     f.write(cloudcode.getvalue())
+#     cloudcode_path = f.name
+# dash.add_diapositiva(cloudcode_path)
 
 # apiladas = chart.create_categoria(category)
 # with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
@@ -107,9 +107,7 @@ sheet.pagina_2(headmap)
 
 
 
-# grupo_tabla= chart.create_table_group(group)
-# hmtldash='resource/img/matplob/dashboard_image.png'
-# dash.add_diapositiva(hmtldash)
+
 
 
 # dash.save_pdf()
