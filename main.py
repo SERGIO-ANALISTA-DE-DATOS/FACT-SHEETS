@@ -67,13 +67,13 @@ dash.add_diapositiva(cover)
 # with open('resource/img/Temporal/tabal_caliente.png', "wb") as f:
 #     f.write(buf.getvalue())
     
-# chart_fuente,buf = chart.create_chartpie(fuente)
-# with open('resource/img/Temporal/charpie_fuente.png', "wb") as f:
-#     f.write(buf.getvalue())   
+chart_fuente,buf = chart.create_chartpie(fuente)
+with open('resource/img/Temporal/charpie_fuente.png', "wb") as f:
+    f.write(buf.getvalue())   
     
-grupo_tabla,buf= chart.create_table_group(group)
-with open('resource/img/Temporal/tableGrupo_fuente.png', "wb") as f:
-    f.write(buf.getvalue())  
+# grupo_tabla,buf= chart.create_table_group(group)
+# with open('resource/img/Temporal/tableGrupo_fuente.png', "wb") as f:
+#     f.write(buf.getvalue())
     
 
 # sheet.pagina_2(headmap,chart_fuente)

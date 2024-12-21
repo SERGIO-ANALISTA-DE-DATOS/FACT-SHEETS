@@ -286,13 +286,13 @@ class chart_generate:
         total_impactos = totales_por_categoria["impactos"].sum()
         total_facturas = totales_por_categoria["facturas"].sum()
 
-        fig, axes = plt.subplots(3, 4, figsize=(10, 8), gridspec_kw={'wspace': 0.0, 'hspace': -0.3})
-        fig.subplots_adjust(left=0.95, right=0.95,  bottom=10, hspace=0.1)
+        fig, axes = plt.subplots(3, 4, figsize=(10, 8), gridspec_kw={'wspace': 0.0, 'hspace':0.0})
+        # plt.subplots_adjust(left=0.94, right=0.95, bottom=0.1, top=0.9, hspace=0.4, wspace=0.3)
         metricas = ["venta", "impactos", "facturas"]
         totales_globales = [total_ventas, total_impactos, total_facturas]
-        titulos_metricas = ["VENTA", "IMPACTOS", "FACTURAS"]
+        titulos_metricas = ["VENTA  ", "IMPACTOS", "FACTURAS"]
         for i, metrica in enumerate(metricas):
-            fig.text(0.5, 0.5 - i * 0.31, titulos_metricas[i], va='center', ha='center', fontsize=42, rotation=90)
+            fig.text(0.02, 0.80 - i * 0.3, titulos_metricas[i], va='center', ha='right', fontsize=12)
             total_global = totales_globales[i]
             vnt = True if i == 0 else False
             for j, categoria in enumerate(categorias):
